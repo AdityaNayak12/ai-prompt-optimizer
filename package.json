@@ -1,0 +1,24 @@
+{
+  "name": "prompt-advisor-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade monorepo for Prompt Advisor (FastAPI + React/TS Chrome Extension MV3)",
+  "workspaces": [
+    "apps/extension"
+  ],
+  "scripts": {
+    "setup": "npm install && npm run setup:backend",
+    "setup:backend": "cd apps/backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt",
+    "dev:backend": "cd apps/backend && .venv/bin/uvicorn app.main:app --reload --port 8000",
+    "dev:extension": "npm run dev --workspace=apps/extension",
+    "dev": "concurrently --kill-others -n \"backend,extension\" -c \"blue,green\" \"npm run dev:backend\" \"npm run dev:extension\"",
+    "generate-types": "cd apps/backend && .venv/bin/python -m app.scripts.generate_openapi && cd ../.. && npx openapi-typescript apps/backend/openapi.json -o apps/extension/src/types/api.ts",
+    "lint:backend": "cd apps/backend && .venv/bin/ruff check .",
+    "format:backend": "cd apps/backend && .venv/bin/ruff format .",
+    "test:backend": "cd apps/backend && .venv/bin/pytest"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "openapi-typescript": "^7.0.0"
+  }
+}
