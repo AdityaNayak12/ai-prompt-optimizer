@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Advisor",
+  "version": "1.0.0",
+  "description": "Optimize your AI prompts in real-time with Groq-powered prompt engineering.",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "contextMenus",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}
