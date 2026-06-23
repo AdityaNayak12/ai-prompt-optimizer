@@ -5,8 +5,8 @@ interface PromptFormProps {
   setPrompt: (val: string) => void;
   tone: string;
   setTone: (val: string) => void;
-  detailLevel: string;
-  setDetailLevel: (val: string) => void;
+  optimizationMode: string;
+  setOptimizationMode: (val: string) => void;
   targetAudience: string;
   setTargetAudience: (val: string) => void;
   groqModel: string;
@@ -20,8 +20,8 @@ export default function PromptForm({
   setPrompt,
   tone,
   setTone,
-  detailLevel,
-  setDetailLevel,
+  optimizationMode,
+  setOptimizationMode,
   targetAudience,
   setTargetAudience,
   groqModel,
@@ -59,8 +59,8 @@ export default function PromptForm({
             onChange={(e) => setGroqModel(e.target.value)}
             disabled={loading}
           >
-            <option value="llama3-8b-8192">Llama 3 8B (Fast)</option>
-            <option value="llama3-70b-8192">Llama 3 70B (Smart)</option>
+            <option value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</option>
+            <option value="llama-3.3-70b-versatile">Llama 3.3 70B (Smart)</option>
             <option value="mixtral-8x7b-32768">Mixtral 8x7B (Complex)</option>
           </select>
         </div>
@@ -85,19 +85,19 @@ export default function PromptForm({
         </div>
 
         <div className="form-group">
-          <label className="form-label" htmlFor="detail-select">
-            Detail Level
+          <label className="form-label" htmlFor="optimization-mode-select">
+            Optimization Mode
           </label>
           <select
-            id="detail-select"
+            id="optimization-mode-select"
             className="select-premium"
-            value={detailLevel}
-            onChange={(e) => setDetailLevel(e.target.value)}
+            value={optimizationMode}
+            onChange={(e) => setOptimizationMode(e.target.value)}
             disabled={loading}
           >
+            <option value="save_tokens">Save Tokens</option>
             <option value="balanced">Balanced</option>
-            <option value="concise">Concise</option>
-            <option value="detailed">Detailed</option>
+            <option value="max_quality">Max Quality</option>
           </select>
         </div>
 

@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class OptimizeRequest(BaseModel):
@@ -25,9 +25,14 @@ class OptimizeRequest(BaseModel):
         examples=["developers"],
     )
     groq_model: str | None = Field(
-        default="llama3-8b-8192",
+        default="llama-3.1-8b-instant",
         description="The Groq LLM model used to perform the prompt optimization.",
-        examples=["llama3-8b-8192", "llama3-70b-8192", "mixtral-8x7b-32768"],
+        examples=["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "mixtral-8x7b-32768"],
+    )
+    optimization_mode: str | None = Field(
+        default="balanced",
+        description="The optimization mode: save_tokens, balanced, max_quality.",
+        examples=["save_tokens", "balanced", "max_quality"],
     )
 
 
@@ -43,7 +48,25 @@ class OptimizeMetrics(BaseModel):
     )
 
 
+class OptimizationResult(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    original_tokens: int = Field(..., alias="originalTokens")
+    optimized_tokens: int = Field(..., alias="optimizedTokens")
+    token_delta: int = Field(..., alias="tokenDelta")
+    token_savings_percent: float = Field(..., alias="tokenSavingsPercent")
+    optimization_accepted: bool = Field(..., alias="optimizationAccepted")
+    optimization_mode: str = Field(..., alias="optimizationMode")
+    status: str = Field(..., description="Accepted or Rejected status.")
+    reason: str | None = Field(default=None, description="Reason for rejection, if applicable.")
+    recommendation: str = Field(..., description="Recommendation (e.g. Use Original Prompt).")
+    efficiency_score_original: float = Field(..., alias="efficiencyScoreOriginal")
+    efficiency_score_optimized: float = Field(..., alias="efficiencyScoreOptimized")
+
+
 class OptimizeResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     raw_prompt: str = Field(..., description="The original prompt input.")
     optimized_prompt: str = Field(
         ..., description="The fully optimized prompt, ready to use."
@@ -53,6 +76,9 @@ class OptimizeResponse(BaseModel):
     )
     metrics: OptimizeMetrics = Field(
         ..., description="Performance and token count metrics."
+    )
+    optimization_result: OptimizationResult = Field(
+        ..., description="Detailed token optimization and validation result.", alias="optimizationResult"
     )
 
 

@@ -53,6 +53,40 @@ export interface components {
              */
             detail: string;
         };
+        /** OptimizationResult */
+        OptimizationResult: {
+            /** Originaltokens */
+            originalTokens: number;
+            /** Optimizedtokens */
+            optimizedTokens: number;
+            /** Tokendelta */
+            tokenDelta: number;
+            /** Tokensavingspercent */
+            tokenSavingsPercent: number;
+            /** Optimizationaccepted */
+            optimizationAccepted: boolean;
+            /** Optimizationmode */
+            optimizationMode: string;
+            /**
+             * Status
+             * @description Accepted or Rejected status.
+             */
+            status: string;
+            /**
+             * Reason
+             * @description Reason for rejection, if applicable.
+             */
+            reason?: string | null;
+            /**
+             * Recommendation
+             * @description Recommendation (e.g. Use Original Prompt).
+             */
+            recommendation: string;
+            /** Efficiencyscoreoriginal */
+            efficiencyScoreOriginal: number;
+            /** Efficiencyscoreoptimized */
+            efficiencyScoreOptimized: number;
+        };
         /** OptimizeMetrics */
         OptimizeMetrics: {
             /**
@@ -108,12 +142,21 @@ export interface components {
             /**
              * Groq Model
              * @description The Groq LLM model used to perform the prompt optimization.
-             * @default llama3-8b-8192
-             * @example llama3-8b-8192
-             * @example llama3-70b-8192
+             * @default llama-3.1-8b-instant
+             * @example llama-3.1-8b-instant
+             * @example llama-3.3-70b-versatile
              * @example mixtral-8x7b-32768
              */
             groq_model: string | null;
+            /**
+             * Optimization Mode
+             * @description The optimization mode: save_tokens, balanced, max_quality.
+             * @default balanced
+             * @example save_tokens
+             * @example balanced
+             * @example max_quality
+             */
+            optimization_mode: string | null;
         };
         /** OptimizeResponse */
         OptimizeResponse: {
@@ -134,6 +177,8 @@ export interface components {
             explanation: string;
             /** @description Performance and token count metrics. */
             metrics: components["schemas"]["OptimizeMetrics"];
+            /** @description Detailed token optimization and validation result. */
+            optimizationResult: components["schemas"]["OptimizationResult"];
         };
     };
     responses: never;

@@ -30,37 +30,72 @@ export default function ResponseView({ response, onCopy }: ResponseViewProps) {
     return <ul>{listItems}</ul>;
   };
 
-  const { tokens_before, tokens_after, processing_time_ms } = response.metrics;
-  const tokenDiff = tokens_after - tokens_before;
-  const tokenPctChange = tokens_before > 0 ? Math.round((tokenDiff / tokens_before) * 100) : 0;
+  const result = response.optimizationResult || {
+    originalTokens: response.metrics.tokens_before,
+    optimizedTokens: response.metrics.tokens_after,
+    status: "Accepted",
+    reason: null,
+    recommendation: "Use Optimized Prompt",
+    optimizationAccepted: true,
+  };
+
+  const isAccepted = result.optimizationAccepted;
 
   return (
     <div className="card-response">
-      {/* Performance Metrics */}
-      <div className="metrics-row">
-        <div className="metric-tag">
-          Latency: <span className="metric-value">{processing_time_ms}ms</span>
+      {/* Optimization Result Card */}
+      <div 
+        style={{
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          paddingBottom: "1rem",
+          marginBottom: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem"
+        }}
+      >
+        <span className="form-label" style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.8 }}>
+          Optimization Result
+        </span>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", fontSize: "0.85rem", color: "#9ca3af" }}>
+          <div>
+            Original: <span style={{ color: "#f3f4f6", fontWeight: "600" }}>{result.originalTokens} tokens</span>
+          </div>
+          <div>
+            Optimized: <span style={{ color: "#f3f4f6", fontWeight: "600" }}>{result.optimizedTokens} tokens</span>
+          </div>
         </div>
-        <div className="metric-tag">
-          Before: <span className="metric-value">{tokens_before} tok</span>
-        </div>
-        <div className="metric-tag">
-          After: <span className="metric-value">{tokens_after} tok</span>
-        </div>
-        <div 
-          className="metric-tag"
-          style={{
-            borderColor: tokenPctChange > 0 ? "rgba(124, 58, 237, 0.3)" : "rgba(16, 185, 129, 0.3)",
-            backgroundColor: tokenPctChange > 0 ? "rgba(124, 58, 237, 0.05)" : "rgba(16, 185, 129, 0.05)",
-          }}
-        >
-          Delta:{" "}
-          <span 
-            className="metric-value"
-            style={{ color: tokenPctChange > 0 ? "#c084fc" : "#34d399" }}
-          >
-            {tokenPctChange > 0 ? `+${tokenPctChange}%` : `${tokenPctChange}%`}
-          </span>
+
+        <div style={{ marginTop: "0.5rem", display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.85rem" }}>
+          <div>
+            <span style={{ color: "#9ca3af" }}>Status:</span>{" "}
+            <span 
+              style={{ 
+                fontWeight: "700", 
+                color: isAccepted ? "#10b981" : "#ef4444",
+                backgroundColor: isAccepted ? "rgba(16, 185, 129, 0.1)" : "rgba(239, 68, 68, 0.1)",
+                padding: "0.2rem 0.5rem",
+                borderRadius: "0.25rem",
+                display: "inline-block"
+              }}
+            >
+              {isAccepted ? "✅ Accepted" : "❌ Rejected"}
+            </span>
+          </div>
+          
+          {result.reason && (
+            <div>
+              <span style={{ color: "#9ca3af" }}>Reason:</span>{" "}
+              <span style={{ color: "#f87171", fontWeight: "500" }}>{result.reason}</span>
+            </div>
+          )}
+
+          <div>
+            <span style={{ color: "#9ca3af" }}>Recommendation:</span>{" "}
+            <span style={{ color: isAccepted ? "#60a5fa" : "#fbbf24", fontWeight: "600" }}>
+              {result.recommendation}
+            </span>
+          </div>
         </div>
       </div>
 

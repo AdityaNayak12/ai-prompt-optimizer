@@ -6,9 +6,9 @@ import { optimizePrompt, OptimizeRequest, OptimizeResponse } from "../utils/api-
 export default function AppLayout() {
   const [prompt, setPrompt] = useState("");
   const [tone, setTone] = useState("professional");
-  const [detailLevel, setDetailLevel] = useState("balanced");
+  const [optimizationMode, setOptimizationMode] = useState("balanced");
   const [targetAudience, setTargetAudience] = useState("");
-  const [groqModel, setGroqModel] = useState("llama3-8b-8192");
+  const [groqModel, setGroqModel] = useState("llama-3.1-8b-instant");
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +67,8 @@ export default function AppLayout() {
     const payload: OptimizeRequest = {
       prompt: prompt.trim(),
       tone: tone || null,
-      detail_level: detailLevel || null,
+      detail_level: "balanced",
+      optimization_mode: optimizationMode || null,
       target_audience: targetAudience.trim() || null,
       groq_model: groqModel || null,
     };
@@ -141,8 +142,8 @@ export default function AppLayout() {
           setPrompt={setPrompt}
           tone={tone}
           setTone={setTone}
-          detailLevel={detailLevel}
-          setDetailLevel={setDetailLevel}
+          optimizationMode={optimizationMode}
+          setOptimizationMode={setOptimizationMode}
           targetAudience={targetAudience}
           setTargetAudience={setTargetAudience}
           groqModel={groqModel}

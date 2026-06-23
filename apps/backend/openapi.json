@@ -98,6 +98,78 @@
         ],
         "title": "DetailResponse"
       },
+      "OptimizationResult": {
+        "properties": {
+          "originalTokens": {
+            "type": "integer",
+            "title": "Originaltokens"
+          },
+          "optimizedTokens": {
+            "type": "integer",
+            "title": "Optimizedtokens"
+          },
+          "tokenDelta": {
+            "type": "integer",
+            "title": "Tokendelta"
+          },
+          "tokenSavingsPercent": {
+            "type": "number",
+            "title": "Tokensavingspercent"
+          },
+          "optimizationAccepted": {
+            "type": "boolean",
+            "title": "Optimizationaccepted"
+          },
+          "optimizationMode": {
+            "type": "string",
+            "title": "Optimizationmode"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Accepted or Rejected status."
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Reason for rejection, if applicable."
+          },
+          "recommendation": {
+            "type": "string",
+            "title": "Recommendation",
+            "description": "Recommendation (e.g. Use Original Prompt)."
+          },
+          "efficiencyScoreOriginal": {
+            "type": "number",
+            "title": "Efficiencyscoreoriginal"
+          },
+          "efficiencyScoreOptimized": {
+            "type": "number",
+            "title": "Efficiencyscoreoptimized"
+          }
+        },
+        "type": "object",
+        "required": [
+          "originalTokens",
+          "optimizedTokens",
+          "tokenDelta",
+          "tokenSavingsPercent",
+          "optimizationAccepted",
+          "optimizationMode",
+          "status",
+          "recommendation",
+          "efficiencyScoreOriginal",
+          "efficiencyScoreOptimized"
+        ],
+        "title": "OptimizationResult"
+      },
       "OptimizeMetrics": {
         "properties": {
           "tokens_before": {
@@ -199,11 +271,29 @@
             ],
             "title": "Groq Model",
             "description": "The Groq LLM model used to perform the prompt optimization.",
-            "default": "llama3-8b-8192",
+            "default": "llama-3.1-8b-instant",
             "examples": [
-              "llama3-8b-8192",
-              "llama3-70b-8192",
+              "llama-3.1-8b-instant",
+              "llama-3.3-70b-versatile",
               "mixtral-8x7b-32768"
+            ]
+          },
+          "optimization_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optimization Mode",
+            "description": "The optimization mode: save_tokens, balanced, max_quality.",
+            "default": "balanced",
+            "examples": [
+              "save_tokens",
+              "balanced",
+              "max_quality"
             ]
           }
         },
@@ -233,6 +323,10 @@
           "metrics": {
             "$ref": "#/components/schemas/OptimizeMetrics",
             "description": "Performance and token count metrics."
+          },
+          "optimizationResult": {
+            "$ref": "#/components/schemas/OptimizationResult",
+            "description": "Detailed token optimization and validation result."
           }
         },
         "type": "object",
@@ -240,7 +334,8 @@
           "raw_prompt",
           "optimized_prompt",
           "explanation",
-          "metrics"
+          "metrics",
+          "optimizationResult"
         ],
         "title": "OptimizeResponse"
       }
